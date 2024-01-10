@@ -1,14 +1,14 @@
 pipeline {
    agent any
    environment {
-      AWS_REGION = 'us-east-1'
-      ECR_REPOSITORY = '420583526614.dkr.ecr.us-east-1.amazonaws.com/code2cloud-ecr'
+      AWS_REGION = 'ca-central-1'
+      ECR_REPOSITORY = '048020375809.dkr.ecr.ca-central-1.amazonaws.com/code2cloud-ecr'
       CONTAINER_NAME = 'code2cloud'
    }
     stages {
         stage('Build') {
             steps {
-                withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+                withAWS(credentials: 'aws-cred', region: 'ca-central-1') {
                   sh ''' 
                   docker ps
                   aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY:$CONTAINER_NAME
@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Artifactory Deploy') {
             steps {
-                withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+                withAWS(credentials: 'aws-cred', region: 'ca-central-1') {
                   sh ''' 
                   docker ps
                   $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
@@ -61,7 +61,7 @@ pipeline {
          }
         stage('Server Deploy') {
             steps {
-                withAWS(credentials: 'aws-cred', region: 'us-east-1') {
+                withAWS(credentials: 'aws-cred', region: 'ca-central-1') {
                 sh '''
                     aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY:$CONTAINER_NAME
                     curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o ./docker-compose                    
